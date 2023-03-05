@@ -5,6 +5,8 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
+var prompt = "You are a chess grand master playing an important game. You will recieve your moves in algebraic notation inside of square brackets. Respond with your moves in the same way. Keep track of the board state and confirm that each move is legal before you play it. My first move is "
+var errormsg = "";
 $("#playerColor").html(playerColor=="w"?"White":"Black");
 
 function onDragStart (source, piece, position, orientation) {
@@ -36,7 +38,7 @@ function onDrop (source, target, piece) {
     if (move === null) return 'snapback'
     if(firstMove){
         firstMove=0;
-        PlayerMove("Lets play a game of chess. respond with your moves in algebraic notation inside of square brackets and i will do the same. please make the best moves you can.  my first move is ["+game.history()[game.history().length-1]+"]");
+        PlayerMove(prompt+"["+game.history()[game.history().length-1]+"]");
     }else{
         PlayerMove("["+game.history()[game.history().length-1]+"]");
     }
