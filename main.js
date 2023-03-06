@@ -6,7 +6,7 @@ var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
 var startingPosition=0;
-var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4].  I will do the same. [FIRSTMOVE]"
+var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4]. [BOARDSTATE].  I will do the same. [FIRSTMOVE]"
 var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
 var freeMove = 0; 
@@ -24,7 +24,7 @@ var playerFirstPronoun=(playerColor=="w"?"I":"You");
 $("#playerColor").html(playerColorHuman);
 prompt = prompt.replace("[STARTING]",playerFirstPronoun);
 
-if(playerColor!="w"){
+if(firstMove==1 && playerColor!=game.turn()){
     prompt = prompt.replace("[FIRSTMOVE]","You go first.");
     PlayerMove(prompt);
     firstMove=0;
@@ -151,7 +151,9 @@ var config = {
     onDrop: onDrop,
     onSnapEnd: onSnapEnd
 }
-if(startingPosition!==0){
+if(startingPosition===0){
+    prompt = prompt.replace("[BOARDSTATE]","");
+}else{
     if(startingPosition.stateType=="FEN"){
         config.position=startingPosition.boardState;
         game.load(startingPosition.boardState);
@@ -159,6 +161,7 @@ if(startingPosition!==0){
         game.loadPGN(startingPosition.boardState);
         config.position=game.fen();
     }
+    prompt = prompt.replace("[BOARDSTATE]","Lets start from the position "+game.fen());
 }
 board = Chessboard('myBoard', config)
 updateStatus()
