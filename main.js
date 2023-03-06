@@ -5,9 +5,24 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
-var prompt = "You are a chess grand master playing an important game. You will recieve your moves in algebraic notation inside of square brackets. Respond with your moves in the same way. Keep track of the board state and confirm that each move is legal before you play it. My first move is "
-var errormsg = "";
-$("#playerColor").html(playerColor=="w"?"White":"Black");
+var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets and i will do the same. [STARTING] will go first. [FIRSTMOVE]"
+var errorPrompt = "";
+
+// settings
+if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
+if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
+if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
+
+var playerColorHuman=("w"?"White":"Black");
+var playerFirstPronoun=("w"?"I":"You");
+$("#playerColor").html(playerColorHuman);
+prompt = prompt.replace("[STARTING]",playerFirstPronoun);
+
+if(playerColor!="w"){
+    prompt = prompt.replace("[FIRSTMOVE]","You go first.");
+    PlayerMove(prompt);
+    firstMove=0;
+}
 
 function onDragStart (source, piece, position, orientation) {
     // do not pick up pieces if the game is over
@@ -38,6 +53,7 @@ function onDrop (source, target, piece) {
     if (move === null) return 'snapback'
     if(firstMove){
         firstMove=0;
+        prompt = prompt.replace("[FIRSTMOVE]","My first move is ");
         PlayerMove(prompt+"["+game.history()[game.history().length-1]+"]");
     }else{
         PlayerMove("["+game.history()[game.history().length-1]+"]");
@@ -49,14 +65,22 @@ function PlayerMove(movestring){
     $('textarea').val(movestring);
     $("button.absolute").click();
 }
+
+var badMoveCount = 0;
 function AImove(movestring){
     var move = game.move(movestring);
     if(move === null){
-        console.log("bad ai move");
-        // TODO tell the AI off
-         PlayerMove("Thats not a legal move. The current boardstate is '"+game.pgn()+"' and you are playing black. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.");
+        badMoveCount++;
+        if(badMoveCount>2){
+            alert("Loop detected. User input required")
+            badMoveCount=2;
+            return false;
+        }
+        console.log(badMoveCount+" bad ai moves in a row");
+        PlayerMove("Thats not a legal move. The current boardstate is '"+game.pgn()+"' and you are playing black. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.");
         return false;
     }else{
+        badMoveCount=0;
         board.move(move.from+"-"+move.to);
     }
     updateStatus()
@@ -119,9 +143,7 @@ updateStatus()
 var waiting;
 var latest;
 function dowait(){
-    console.log("waiting")
     if(jQuery(".border-0>.gap-2").text()=="Regenerate response"){
-        console.log("DONE")
         var AIresponse =jQuery(".bg-gray-50:last").find("p").text();
         var matches = AIresponse.match(/\[(.*?)\]/);
         if(matches){
@@ -133,7 +155,7 @@ function dowait(){
         }
         window.clearInterval(waiting);
     }else{
-        console.log("WAITING FOR CHAT OUTPUT TO BE DONE")
+        console.log("waiting...")
     }
 }
 
@@ -143,5 +165,4 @@ jQuery('body').on('DOMNodeInserted', '.bg-gray-50', function () {
     // wait for "stop generating" to turn into "regenerate response"
     window.clearInterval(waiting);
     waiting=setInterval(dowait, 1000);
-    // TODO send this output to chessboard if is right format
 });
