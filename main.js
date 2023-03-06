@@ -6,15 +6,18 @@ var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
 var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets and i will do the same. [STARTING] will go first. [FIRSTMOVE]"
-var errorPrompt = "";
+var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
+var scoldType = 3;
 
 // settings
 if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
+if (typeof settings.scoldType !== 'undefined') scoldType = scoldType;
 if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
 if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
 
-var playerColorHuman=("w"?"White":"Black");
-var playerFirstPronoun=("w"?"I":"You");
+var playerColorHuman=(playerColor=="w"?"White":"Black");
+var AIColorHuman=(playerColor!="w"?"White":"Black");
+var playerFirstPronoun=(playerColor=="w"?"I":"You");
 $("#playerColor").html(playerColorHuman);
 prompt = prompt.replace("[STARTING]",playerFirstPronoun);
 
@@ -60,10 +63,10 @@ function onDrop (source, target, piece) {
     }
     updateStatus()
 }
-function PlayerMove(movestring){
+function PlayerMove(movestring,dontSend){
     console.log("PLAYER MOVED "+movestring);
     $('textarea').val(movestring);
-    $("button.absolute").click();
+    if (typeof dontSend === 'undefined') $("button.absolute").click();
 }
 
 var badMoveCount = 0;
@@ -71,13 +74,16 @@ function AImove(movestring){
     var move = game.move(movestring);
     if(move === null){
         badMoveCount++;
-        if(badMoveCount>2){
-            alert("Loop detected. User input required")
-            badMoveCount=2;
+        errorPrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
+        errorPrompt = errorPrompt.replace("[PGN]",game.pgn());
+        if(scoldType<=0||badMoveCount>scoldType-1){
+            console.log("Too many bad moves. User input required")
+            PlayerMove(errorPrompt,1);
+            badMoveCount=scoldType-1;
             return false;
         }
         console.log(badMoveCount+" bad ai moves in a row");
-        PlayerMove("Thats not a legal move. The current boardstate is '"+game.pgn()+"' and you are playing black. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.");
+        PlayerMove(errorPrompt);
         return false;
     }else{
         badMoveCount=0;
@@ -139,15 +145,19 @@ board = Chessboard('myBoard', config)
 updateStatus()
 
 
+if(playerColor!="w"){
+    board.flip();
+}
 
 var waiting;
 var latest;
 function dowait(){
     if(jQuery(".border-0>.gap-2").text()=="Regenerate response"){
         var AIresponse =jQuery(".bg-gray-50:last").find("p").text();
-        var matches = AIresponse.match(/\[(.*?)\]/);
+        var matches = AIresponse.match(/\[(.*?)\]/); // get the first move inside square brackets
         if(matches){
             AIturn=matches[1];
+            AIturn = AIturn.substr( AIturn.indexOf('.') + 1 ); // remove the turn number if present
             AImove(AIturn);
             console.log("AI moved "+AIturn);
         }else{
