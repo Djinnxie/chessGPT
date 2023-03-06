@@ -5,7 +5,7 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
-var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets and i will do the same. [STARTING] will go first. [FIRSTMOVE]"
+var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets and i will do the same. [FIRSTMOVE]"
 var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
 
@@ -56,7 +56,7 @@ function onDrop (source, target, piece) {
     if (move === null) return 'snapback'
     if(firstMove){
         firstMove=0;
-        prompt = prompt.replace("[FIRSTMOVE]","My first move is ");
+        prompt = prompt.replace("[FIRSTMOVE]","I will go first. My first move is ");
         PlayerMove(prompt+"["+game.history()[game.history().length-1]+"]");
     }else{
         PlayerMove("["+game.history()[game.history().length-1]+"]");
