@@ -19,6 +19,9 @@ before pasting the script, you can paste a settings object
             scoldType:0, // how many times will the script try to automatically scold the bot into playing a legal move
             prompt: "Lets play chess! Reply with your moves in algebraic notation and i will do the same. [FIRSTMOVE]", // replaces the initial prompt. [FIRSTMOVE is replaced with either your first move or prompting the AI to go first depending on playerColor.
             errorPrompt:"Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move.", // auto-scold text. variables are [PGN],[FEN],[LastMove],[AIcolor]
-            startingPosition:"default" // TODO
+            startingPosition:{ // set a custom starting position
+                stateType:"FEN", // ["FEN","PGN"]
+                boardState:"rnbqkbnr/pppp1ppp/8/8/4Pp2/8/PPPP2PP/RNBQKBNR"
+            } 
         };
 ```
