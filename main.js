@@ -83,6 +83,7 @@ var badMoveCount = 0;
 function AImove(movestring){
     var move = game.move(movestring);
     if(move === null){
+        console.log("Bad move "+movestring);
         badMoveCount++;
         ePrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
         ePrompt = ePrompt.replace("[PGN]",game.pgn());
@@ -180,10 +181,10 @@ function dowait(){
         if(matches){
             AIturn=matches[1];
             AIturn = AIturn.substr( AIturn.indexOf('.') + 1 ); // remove the turn number if present
+            console.log("AI attempts move "+AIturn);
             AImove(AIturn);
-            console.log("AI moved "+AIturn);
         }else{
-            console.log("INVALID MOVE")
+            console.log("INVALID MOVE "+AIresponse);
         }
         window.clearInterval(waiting);
     }else{
