@@ -74,7 +74,8 @@ function onDrop (source, target, piece) {
     // say the prompt if its the first move of the game 
     if(firstMove){
         firstMove=0;
-        prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
+        //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
+        prompt = game.pgn();
         PlayerMove(prompt);
     }else{
         PlayerMove("["+game.history()[game.history().length-1]+"]");
