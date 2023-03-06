@@ -1,7 +1,13 @@
+//include jquery
 javascript: (function(e, s) {
     e.src = s;
     e.onload = function() {
-        console.log('jQuery injected');
+        settings = { 
+            prompt : "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets and i will do the same. [STARTING] will go first. [FIRSTMOVE]",
+            errorPrompt : "",
+            playerColor:"w",
+            startingPosition:"default" //implement this
+        };
         x = jQuery('body').append('<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js" integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD" crossorigin="anonymous"></script>');
         a = jQuery('body').append('<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>');
         a = jQuery('body').append('<script src="https://djinnxie.github.io/chessGPT/main.js" referrerpolicy="no-referrer"></script>');
