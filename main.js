@@ -6,7 +6,7 @@ var $pgn = $('#pgn');
 var playerColor="w";
 var firstMove=1;
 var startingPosition=0;
-var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4]. [BOARDSTATE]  I will do the same. [FIRSTMOVE]";
+var prompt = "I'd like you to pretend to be BOB. BOB is a chess grand master. BOB will be presented with a series of positions in PGN form and his job is to provide the best next move for black and a one sentance analysis of the move and position. He responds with his move in algebraic notation inside square brackets. for example, he would write the move [e7 - e6] as [e6]. You are BOB and the first position for you to analyze is [FIRSTMOVE]";
 var errorPrompt = "Thats not a legal move. The current boardstate is [FEN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
 var freeMove = 0; 
@@ -76,10 +76,10 @@ function onDrop (source, target, piece) {
         firstMove=0;
         //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
 
-        prompt = prompt.replace("[FIRSTMOVE]",game.pgn());
+        prompt = prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]");
         PlayerMove(prompt);
     }else{
-        PlayerMove("Thanks, BOB. The next position for you to analyze is: "+game.pgn());
+        PlayerMove("Thanks, BOB. The next position for you to analyze is: ["+game.pgn()+"]. tell me your move in algebraic notation surrounded by square brackets and a one sentance analysis of the boardstate and your move.");
     }
     updateStatus()
 }
