@@ -5,15 +5,18 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
+var startingPosition=0;
 var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4].  I will do the same. [FIRSTMOVE]"
 var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
+var freeMove = 0; 
 
 // settings
 if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
 if (typeof settings.scoldType !== 'undefined') scoldType = scoldType;
 if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
 if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
+if (typeof settings.startingPosition !== 'undefined') startingPosition = settings.startingPosition;
 
 var playerColorHuman=(playerColor=="w"?"White":"Black");
 var AIColorHuman=(playerColor!="w"?"White":"Black");
@@ -25,6 +28,13 @@ if(playerColor!="w"){
     prompt = prompt.replace("[FIRSTMOVE]","You go first.");
     PlayerMove(prompt);
     firstMove=0;
+}
+
+function autoReplace(input){
+    input = input.replace("[PGN]",game.pgn());
+    input = input.replace("[FEN]",game.fen());
+    input = input.replace("[AIcolor]",AIColorHuman);
+    return input;
 }
 
 function onDragStart (source, piece, position, orientation) {
@@ -140,6 +150,15 @@ var config = {
     pieceTheme: 'https://chessboardjs.com/img/chesspieces/alpha/{piece}.png',
     onDrop: onDrop,
     onSnapEnd: onSnapEnd
+}
+if(startingPosition!==0){
+    if(startingPosition.stateType=="FEN"){
+        config.position=startingPosition.boardState;
+        game.load(startingPosition.boardState);
+    }else if(startingPosition.stateType=="PGN"){
+        game.loadPGN(startingPosition.boardState);
+        config.position=game.fen();
+    }
 }
 board = Chessboard('myBoard', config)
 updateStatus()
