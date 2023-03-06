@@ -78,7 +78,7 @@ function onDrop (source, target, piece) {
         prompt = game.pgn();
         PlayerMove(prompt);
     }else{
-        PlayerMove("["+game.history()[game.history().length-1]+"]");
+        PlayerMove("Thanks, BOB. The next position for you to analyze is: "+game.pgn());
     }
     updateStatus()
 }
