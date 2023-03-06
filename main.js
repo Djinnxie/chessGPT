@@ -75,7 +75,8 @@ function onDrop (source, target, piece) {
     if(firstMove){
         firstMove=0;
         //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
-        prompt = game.pgn();
+
+        prompt = prompt.replace("[FIRSTMOVE]",game.pgn());
         PlayerMove(prompt);
     }else{
         PlayerMove("Thanks, BOB. The next position for you to analyze is: "+game.pgn());
