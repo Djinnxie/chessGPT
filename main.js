@@ -5,7 +5,7 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
-var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets and i will do the same. [FIRSTMOVE]"
+var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4].  I will do the same. [FIRSTMOVE]"
 var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
 
@@ -74,16 +74,16 @@ function AImove(movestring){
     var move = game.move(movestring);
     if(move === null){
         badMoveCount++;
-        errorPrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
-        errorPrompt = errorPrompt.replace("[PGN]",game.pgn());
+        ePrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
+        ePrompt = ePrompt.replace("[PGN]",game.pgn());
         if(scoldType<=0||badMoveCount>scoldType-1){
             console.log("Too many bad moves. User input required")
-            PlayerMove(errorPrompt,1);
+            PlayerMove(ePrompt,1);
             badMoveCount=scoldType-1;
             return false;
         }
         console.log(badMoveCount+" bad ai moves in a row");
-        PlayerMove(errorPrompt);
+        PlayerMove(ePrompt);
         return false;
     }else{
         badMoveCount=0;
