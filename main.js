@@ -1,29 +1,34 @@
-var board = null
-var game = new Chess()
-var $status = $('#status')
-var $fen = $('#fen')
-var $pgn = $('#pgn')
-var playerColor="w"
+var board = null;
+var game = new Chess();
+var $status = $('#status');
+var $fen = $('#fen');
+var $pgn = $('#pgn');
+var playerColor="w";
 var firstMove=1;
 var startingPosition=0;
-var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4]. [BOARDSTATE]  I will do the same. [FIRSTMOVE]"
+var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4]. [BOARDSTATE]  I will do the same. [FIRSTMOVE]";
 var errorPrompt = "Thats not a legal move. The current boardstate is [FEN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
 var freeMove = 0; 
 
 // settings
-if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
-if (typeof settings.scoldType !== 'undefined') scoldType = settings.scoldType;
-if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
-if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
-if (typeof settings.startingPosition !== 'undefined') startingPosition = settings.startingPosition;
+// TODO write a function for this
+if (typeof settings !== 'undefined'){
+    if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
+    if (typeof settings.scoldType !== 'undefined') scoldType = settings.scoldType;
+    if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
+    if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
+    if (typeof settings.startingPosition !== 'undefined') startingPosition = settings.startingPosition;
+}
 
+// word terms 
 var playerColorHuman=(playerColor=="w"?"White":"Black");
 var AIColorHuman=(playerColor!="w"?"White":"Black");
 var playerFirstPronoun=(playerColor=="w"?"I":"You");
 $("#playerColor").html(playerColorHuman);
 prompt = prompt.replace("[STARTING]",playerFirstPronoun);
 
+// if the AI goes first
 if(firstMove==1 && playerColor!=game.turn()){
     prompt = prompt.replace("[BOARDSTATE]","");
     prompt = prompt.replace("[FIRSTMOVE]","You go first.");
@@ -31,6 +36,7 @@ if(firstMove==1 && playerColor!=game.turn()){
     firstMove=0;
 }
 
+// TODO finish implementing this
 function autoReplace(input){
     input = input.replace("[PGN]",game.pgn());
     input = input.replace("[FEN]",game.fen());
@@ -42,9 +48,8 @@ function onDragStart (source, piece, position, orientation) {
     // do not pick up pieces if the game is over
     if (game.game_over()) return false
 
-    if (game.turn() !== playerColor){
-        return false;
-    }
+    if (game.turn() !== playerColor) return false;
+
     // only pick up pieces for the side to move
     if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
         (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
@@ -65,6 +70,8 @@ function onDrop (source, target, piece) {
 
     // illegal move
     if (move === null) return 'snapback'
+
+    // say the prompt if its the first move of the game 
     if(firstMove){
         firstMove=0;
         prompt = prompt.replace("[FIRSTMOVE]","I will go first. My first move is ");
@@ -83,16 +90,18 @@ function PlayerMove(movestring,dontSend){
 var badMoveCount = 0;
 function AImove(movestring){
     var move = game.move(movestring);
+    // if move is invalid
     if(move === null){
         console.log("Bad move "+movestring);
         badMoveCount++;
+        // TODO autoreplace function
         ePrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
         ePrompt = ePrompt.replace("[PGN]",game.pgn());
         ePrompt = ePrompt.replace("[FEN]",game.fen());
         if(scoldType<=0||badMoveCount>scoldType-1){
             console.log("Too many bad moves. User input required")
             PlayerMove(ePrompt,1);
-            badMoveCount=scoldType-1;
+            badMoveCount=scoldType-1; // you're on thin ice
             return false;
         }
         console.log(badMoveCount+" bad ai moves in a row");
@@ -113,9 +122,11 @@ function onSnapEnd () {
     board.position(game.fen())
 }
 
+// TODO write helper messages when the AI makes an illegal move
 function updateStatus () {
     var status = ''
 
+    // TODO tidy this up
     var moveColor = 'White'
     if (game.turn() === 'b') {
         moveColor = 'Black'
@@ -146,6 +157,7 @@ function updateStatus () {
     $pgn.html(game.pgn())
 }
 
+// TODO allow config values to be overwridden by settings
 var config = {
     draggable: true,
     position: 'start',
@@ -157,6 +169,7 @@ var config = {
 if(startingPosition===0){
     prompt = prompt.replace("[BOARDSTATE]","");
 }else{
+    // TODO theres a bug in this that resets the pieces after the AI's first move. Something to do with the PGN not being generated right
     if(startingPosition.stateType=="FEN"){
         config.position=startingPosition.boardState;
         game.load(startingPosition.boardState);
@@ -170,22 +183,26 @@ board = Chessboard('myBoard', config)
 updateStatus()
 
 
+// Always have the human player at the bottom of the board
 if(playerColor!="w"){
     board.flip();
 }
 
 var waiting;
 var latest;
+// loop to check if the AI is done typing 
 function dowait(){
     if(jQuery(".border-0>.gap-2").text()=="Regenerate response"){
         var AIresponse =jQuery(".bg-gray-50:last").find("p").text();
         var matches = AIresponse.match(/\[(.*?)\]/); // get the first move inside square brackets
+        // TODO convert [e3 - e4] style moves 
         if(matches){
             AIturn=matches[1];
             AIturn = AIturn.substr( AIturn.indexOf('.') + 1 ); // remove the turn number if present
             console.log("AI attempts move "+AIturn);
             AImove(AIturn);
         }else{
+            // TODO handle when the ai doesnt make a move
             console.log("INVALID MOVE "+AIresponse);
         }
         window.clearInterval(waiting);
