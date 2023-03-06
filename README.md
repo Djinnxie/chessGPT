@@ -5,6 +5,13 @@ a chess interface for chatGPT. Its just a proof of concept right now but i plan 
 - only lets the user input legal moves
 
 ## TODO
+- add more configurability
+- experement with better ways of keeping the AI on track
+- pause button that enters moves into chat but doesnt push enter
+- parser for when ai gives moves in [e3 - e4] format
+- fix bugs in custom starting position mode
+- UI options menu
+- free play toggle: no enforcement of piece movement
 
 ## Usage
 To run, paste the code below into the developer console on [chatgpt](https://chat.openai.com/chat)
