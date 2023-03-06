@@ -6,14 +6,14 @@ var $pgn = $('#pgn')
 var playerColor="w"
 var firstMove=1;
 var startingPosition=0;
-var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4]. [BOARDSTATE].  I will do the same. [FIRSTMOVE]"
-var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
+var prompt = "Lets play a game of chess. Reply with your moves in algebraic notation inside square brackets like this: [e4]. [BOARDSTATE]  I will do the same. [FIRSTMOVE]"
+var errorPrompt = "Thats not a legal move. The current boardstate is [FEN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
 var scoldType = 3;
 var freeMove = 0; 
 
 // settings
 if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
-if (typeof settings.scoldType !== 'undefined') scoldType = scoldType;
+if (typeof settings.scoldType !== 'undefined') scoldType = settings.scoldType;
 if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
 if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
 if (typeof settings.startingPosition !== 'undefined') startingPosition = settings.startingPosition;
@@ -25,6 +25,7 @@ $("#playerColor").html(playerColorHuman);
 prompt = prompt.replace("[STARTING]",playerFirstPronoun);
 
 if(firstMove==1 && playerColor!=game.turn()){
+    prompt = prompt.replace("[BOARDSTATE]","");
     prompt = prompt.replace("[FIRSTMOVE]","You go first.");
     PlayerMove(prompt);
     firstMove=0;
@@ -74,7 +75,7 @@ function onDrop (source, target, piece) {
     updateStatus()
 }
 function PlayerMove(movestring,dontSend){
-    console.log("PLAYER MOVED "+movestring);
+    console.log(movestring);
     $('textarea').val(movestring);
     if (typeof dontSend === 'undefined') $("button.absolute").click();
 }
@@ -87,6 +88,7 @@ function AImove(movestring){
         badMoveCount++;
         ePrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
         ePrompt = ePrompt.replace("[PGN]",game.pgn());
+        ePrompt = ePrompt.replace("[FEN]",game.fen());
         if(scoldType<=0||badMoveCount>scoldType-1){
             console.log("Too many bad moves. User input required")
             PlayerMove(ePrompt,1);
