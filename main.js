@@ -198,9 +198,10 @@ function dowait(){
         var AIresponse =jQuery(".bg-gray-50:last").find("p").text();
         var matches = AIresponse.match(/\[(.*?)\]/); // get the first move inside square brackets
         // TODO convert [e3 - e4] style moves 
+        // convert [5...dxe4] format
         if(matches){
             AIturn=matches[1];
-            AIturn = AIturn.substr( AIturn.indexOf('.') + 1 ); // remove the turn number if present
+            AIturn = AIturn.substr( AIturn.lastIndexOf('.') + 1 ); // remove the turn number if present
             console.log("AI attempts move "+AIturn);
             AImove(AIturn);
         }else{
