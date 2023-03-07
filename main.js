@@ -17,6 +17,7 @@ var freeMove = 0; // TODO
 if (typeof settings !== 'undefined'){
     if (typeof settings.freeMove !== 'undefined') freeMove = settings.freeMove;
     if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
+    if (typeof settings.nextPrompt !== 'undefined') nextPrompt = settings.nextPrompt;
     if (typeof settings.scoldType !== 'undefined') scoldType = settings.scoldType;
     if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
     if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
