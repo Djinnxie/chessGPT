@@ -223,7 +223,7 @@ function dowait(){
         // convert [5...dxe4] format
         if(matches){
             AIturn=matches[1];
-            AIturn = AIturn..substr( AIturn.lastIndexOf('.') + 1 ); // remove the turn number if present
+            AIturn = AIturn.substr( AIturn.lastIndexOf('.') + 1 ); // remove the turn number if present
             console.log("AI attempts move "+AIturn);
             AImove(AIturn);
         }else{
