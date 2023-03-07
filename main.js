@@ -7,13 +7,15 @@ var playerColor="w";
 var firstMove=1;
 var startingPosition=0;
 var prompt = "I'd like you to pretend to be BOB. BOB is a chess grand master. BOB will be presented with a series of positions in PGN form and his job is to provide the best next move for black and a one sentance analysis of the move and position. He responds with his move in algebraic notation inside square brackets. for example, he would write the move [e7 - e6] as [e6]. You are BOB and the first position for you to analyze is [FIRSTMOVE]";
-var errorPrompt = "Thats not a legal move. The current boardstate is [FEN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
-var scoldType = 3;
-var freeMove = 0; 
+var nextPrompt = "Thanks, BOB. The next position for you to analyze is: [PGN]. First, tell me your move in algebraic notation surrounded by square brackets and then give a one sentance analysis of the boardstate and your move.");
+var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
+var scoldType = 0;
+var freeMove = 0; // TODO  
 
 // settings
 // TODO write a function for this
 if (typeof settings !== 'undefined'){
+    if (typeof settings.freeMove !== 'undefined') freeMove = settings.freeMove;
     if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
     if (typeof settings.scoldType !== 'undefined') scoldType = settings.scoldType;
     if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
@@ -29,7 +31,7 @@ $("#playerColor").html(playerColorHuman);
 prompt = prompt.replace("[STARTING]",playerFirstPronoun);
 
 // if the AI goes first
-if(firstMove==1 && playerColor!=game.turn()){
+if(firstMove==1 && playerColor!=game.turn()&&!freeMove){
     prompt = prompt.replace("[BOARDSTATE]","");
     prompt = prompt.replace("[FIRSTMOVE]","You go first.");
     PlayerMove(prompt);
@@ -45,6 +47,7 @@ function autoReplace(input){
 }
 
 function onDragStart (source, piece, position, orientation) {
+    if(freeMove) return true;
     // do not pick up pieces if the game is over
     if (game.game_over()) return false
 
@@ -58,6 +61,7 @@ function onDragStart (source, piece, position, orientation) {
 }
 
 function onDrop (source, target, piece) {
+    if(freeMove) return true;
     if(game.turn() != playerColor){
         return 'snapback'
     }
@@ -75,11 +79,10 @@ function onDrop (source, target, piece) {
     if(firstMove){
         firstMove=0;
         //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
-
         prompt = prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]");
         PlayerMove(prompt);
     }else{
-        PlayerMove("Thanks, BOB. The next position for you to analyze is: ["+game.pgn()+"]. tell me your move in algebraic notation surrounded by square brackets and a one sentance analysis of the boardstate and your move.");
+        PlayerMove(nextPrompt.replace("[PGN]","["+game.pgn()+"]"));
     }
     updateStatus()
 }
@@ -157,6 +160,23 @@ function updateStatus () {
     $status.html(status)
     $fen.html(game.fen())
     $pgn.html(game.pgn())
+}
+
+// function to continue from a move
+function setPosition(position){
+    //    first=(typeof first === 'undefined'?0:first);
+    game.load(position);
+    board.position(game.fen());
+    if(firstMove){
+        PlayerMove(prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]"));
+    }else{
+        PlayerMove(nextPrompt.replace("[PGN]","["+game.pgn()+"]"));
+    }
+}
+
+function resumeGame(){
+    freeMove=0;
+    setPosition(board.position());
 }
 
 // TODO allow config values to be overwridden by settings
