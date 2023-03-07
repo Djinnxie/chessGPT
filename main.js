@@ -61,30 +61,31 @@ function onDragStart (source, piece, position, orientation) {
 }
 
 function onDrop (source, target, piece) {
-    if(freeMove) return true;
-    if(game.turn() != playerColor){
-        return 'snapback'
-    }
-    // see if the move is legal
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    })
+    if(!freeMove){
+        if(game.turn() != playerColor){
+            return 'snapback'
+        }
+        // see if the move is legal
+        var move = game.move({
+            from: source,
+            to: target,
+            promotion: 'q' // NOTE: always promote to a queen for example simplicity
+        })
 
-    // illegal move
-    if (move === null) return 'snapback'
+        // illegal move
+        if (move === null) return 'snapback'
 
-    // say the prompt if its the first move of the game 
-    if(firstMove){
-        firstMove=0;
-        //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
-        prompt = prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]");
-        PlayerMove(prompt);
-    }else{
-        PlayerMove(nextPrompt.replace("[PGN]","["+game.pgn()+"]"));
+        // say the prompt if its the first move of the game 
+        if(firstMove){
+            firstMove=0;
+            //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
+            prompt = prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]");
+            PlayerMove(prompt);
+        }else{
+            PlayerMove(nextPrompt.replace("[PGN]","["+game.pgn()+"]"));
+        }
+        updateStatus()
     }
-    updateStatus()
 }
 function PlayerMove(movestring,dontSend){
     console.log(movestring);
