@@ -125,7 +125,7 @@ function AImove(movestring){
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
-    board.position(game.fen())
+    if(!freeMove) board.position(game.fen())
 }
 
 // TODO write helper messages when the AI makes an illegal move
