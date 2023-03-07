@@ -96,7 +96,7 @@ function PlayerMove(movestring,dontSend){
 
 var badMoveCount = 0;
 function AImove(movestring){
-    var move = game.move(movestring);
+    var move = game.move(movestring.trim());
     // if move is invalid
     if(move === null){
         console.log("Bad move "+movestring);
@@ -223,7 +223,7 @@ function dowait(){
         // convert [5...dxe4] format
         if(matches){
             AIturn=matches[1];
-            AIturn = AIturn.substr( AIturn.lastIndexOf('.') + 1 ); // remove the turn number if present
+            AIturn = AIturn..substr( AIturn.lastIndexOf('.') + 1 ); // remove the turn number if present
             console.log("AI attempts move "+AIturn);
             AImove(AIturn);
         }else{
