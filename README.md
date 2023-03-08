@@ -1,9 +1,10 @@
 # chessGPT
 This is a research tool that injects a chessboard into ChatGPT. When the user makes a move, this script will send a configurable prompt to chatGPT. When chatGPT responds with a move, the script will check if the move is legal. If it is, it will make that move on the injected chessboard. If not, it will prompt chatGPT to stay on task. 
+This project using jQuery, chessboard.js, and chess.js. The script in usage includes these dependancies automatically
 
 With this tool, i can consistantly play a whole game against the AI with minimal interruptions. I'm still experementing with different styles of prompts and other features to improve its game, but with this tool, ive managed to have more complete and accurate games of chess with chatGPT than anyone else seems to have managed
 
-![image| width=100](https://user-images.githubusercontent.com/42308767/223728584-c6fa32ac-e047-46c9-b4b4-672a2e031612.png)
+![image](https://user-images.githubusercontent.com/42308767/223728584-c6fa32ac-e047-46c9-b4b4-672a2e031612.png | width=200)
 
 
 ## features
