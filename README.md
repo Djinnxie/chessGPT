@@ -4,15 +4,6 @@ a chess interface for chatGPT. Its just a proof of concept right now but i plan 
 - tells the AI to try again if it makes an illegal move while reminding it of the boardstate
 - only lets the user input legal moves
 
-## TODO
-- add more configurability
-- experement with better ways of keeping the AI on track
-- pause button that enters moves into chat but doesnt push enter
-- parser for when ai gives moves in [e3 - e4] format
-- fix bugs in custom starting position mode
-- UI options menu
-- free play toggle: no enforcement of piece movement
-
 ## Usage
 To run, paste the code below into the developer console on [chatgpt](https://chat.openai.com/chat)
 ```javascript
@@ -31,3 +22,44 @@ settings = {
     errorPrompt : "" // What do you tell the AI when it makes an illegal move? This prompt is to get the AI back on track. Same variables apply
 };
 ```
+
+## Custom Prompts
+You can configure the prompts in any way you like. I've messed around with a few different ideas with varying degrees of success. 
+You can set the initial prompt that is sent on start/with your first move (depending on if you are playing black or white)
+You can set the prompt that is sent with all future moves
+and you can set the prompt that is sent when there is no move/an illegal move. 
+
+### Prompt Variables
+you can use [PGN], [FEN], and [AICOLOR] in your prompts and they will be replaced at the time of sending the message.
+[PGN] - All of the moves up until this point in PGN format.
+[FEN] - the current boardstate in FEN format.
+[AICOLOR] - White or Black, useful for reminding the AI who its supposed to move for
+[MOVE] - NOT CURRENTLY WORKING - Your last move
+
+### Example Prompts
+#### Default
+##### prompt
+```
+"I want you to act as the chess engine stockfish. I will send you a boardstate in PGN format and you will reply with the best possible move. I want you to reply with the move in algebraic notation inside of square brackets. Do not write explainations. Do not reply with anything other than the best move unless instructed. It is [AICOLOR] to move. Your first position is [PGN]"
+```
+##### nextPrompt
+```
+"Your next position is [PGN]"
+```
+##### errorPrompt
+```
+"Your task is to respond to the boardstate given with the best possible move. Reply with the move in algebraic notation inside of square brackets. It is [AICOLOR] to move. Do not reply with anything other than the best move unless instructed. Your position is [PGN]"
+```
+
+
+TODO: Add some sample prompts in ./sampleprompts
+
+
+## TODO
+- add more configurability
+- experement with better ways of keeping the AI on track
+- pause button that enters moves into chat but doesnt push enter
+- parser for when ai gives moves in [e3 - e4] format
+- fix bugs in custom starting position mode
+- UI options menu
+- free play toggle: no enforcement of piece movement
