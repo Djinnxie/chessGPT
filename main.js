@@ -114,7 +114,7 @@ function AImove(movestring){
         //ePrompt = settings.errorPrompt.value.replace("[AIcolor]",AIColorHuman);
         //ePrompt = ePrompt.replace("[PGN]",game.pgn());
         //ePrompt = ePrompt.replace("[FEN]",game.fen());
-        ePrompt = autoreplace(settings.errorPrompt.value);
+        ePrompt = autoReplace(settings.errorPrompt.value);
         if(settings.scoldType.value<=0||badMoveCount>settings.scoldType.value-1){
             console.log("Too many bad moves. User input required")
             PlayerMove(ePrompt,1);
