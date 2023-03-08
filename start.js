@@ -9,10 +9,10 @@ javascript: (function(e, s) {
         c = jQuery('body').append('<div style="width:400px;height:450px;opacity:0.8;position:absolute;top:0px;right:0px"">'+
 '<div id="myBoard" style="width: 400px;"></div>'+
 '<div style="position:absolute;top:400px">'+
-'<button type="button">Settings</button>'+
-'<button type="button">Pause</button>'+
-'<button type="button">free play</button>'+
-'<button type="button">undo</button>'+
+'<button type="button">[Settings]</button> '+
+'<button type="button">[Pause]</button> '+
+'<button type="button">[free play]</button> '+
+'<button type="button">[undo]</button>'+
 '</div>'+
 '<div style="display:none">'+
 ' <label>Status:</label> <div id="status"></div> <label>FEN:</label> <div id="fen"></div> <label>PGN:</label> <div id="pgn">'+
