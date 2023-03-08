@@ -40,9 +40,13 @@ and you can set the prompt that is sent when there is no move/an illegal move.
 
 ### Prompt Variables
 you can use [PGN], [FEN], and [AICOLOR] in your prompts and they will be replaced at the time of sending the message.
+
 [PGN] - All of the moves up until this point in PGN format.
+
 [FEN] - the current boardstate in FEN format.
+
 [AICOLOR] - White or Black, useful for reminding the AI who its supposed to move for
+
 [MOVE] - NOT CURRENTLY WORKING - Your last move
 
 ### Example Prompts
