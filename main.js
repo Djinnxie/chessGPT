@@ -7,13 +7,13 @@ var $pgn = $('#pgn');
 // settings
 defaultSettings = {
     playerColor : {default:"w"},
-    settings.firstMove : {default:1},
-    settings.scoldType : {default:0},
-    settings.freeMove : {default:0},
-    settings.startingPosition : {default:0},
+    firstMove : {default:1},
+    scoldType : {default:0},
+    freeMove : {default:0},
+    startingPosition : {default:0},
     prompt : {default:"I'd like you to pretend to be BOB. BOB is a chess grand master. BOB will be presented with a series of positions in PGN form and his job is to provide the best next move for black and a one sentance analysis of the move and position. He responds with his move in algebraic notation inside square brackets. for example, he would write the move [e7 - e6] as [e6]. You are BOB and the first position for you to analyze is [PGN]"},
-    settings.nextPrompt : {default:"Thanks, BOB. The next position for you to analyze is: [PGN]. First, tell me your move in algebraic notation surrounded by square brackets and then give a one sentance analysis of the boardstate and your move."},
-    settings.errorPrompt : {default:"Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets."}
+    nextPrompt : {default:"Thanks, BOB. The next position for you to analyze is: [PGN]. First, tell me your move in algebraic notation surrounded by square brackets and then give a one sentance analysis of the boardstate and your move."},
+    errorPrompt : {default:"Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets."}
 }
 
 if (typeof settings !== 'undefined'){
