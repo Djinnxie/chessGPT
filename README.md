@@ -3,7 +3,7 @@ This is a research tool that injects a chessboard into ChatGPT. When the user ma
 
 With this tool, i can consistantly play a whole game against the AI with minimal interruptions. I'm still experementing with different styles of prompts and other features to improve its game, but with this tool, ive managed to have more complete and accurate games of chess with chatGPT than anyone else seems to have managed
 
-![image| width=300](https://user-images.githubusercontent.com/42308767/223728584-c6fa32ac-e047-46c9-b4b4-672a2e031612.png)
+![image| width=100](https://user-images.githubusercontent.com/42308767/223728584-c6fa32ac-e047-46c9-b4b4-672a2e031612.png)
 
 
 ## features
