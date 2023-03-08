@@ -29,6 +29,5 @@ settings = {
     prompt : "", // The initial prompt to get chatGPT to play chess. Get creative. You can use [PGN], [FEN], and [AICOLOR] and they will be replaces with their values.
     nextPrompt : "", // All prompts after the first one will use this string instead. The same square bracket variables work here too. 
     errorPrompt : "" // What do you tell the AI when it makes an illegal move? This prompt is to get the AI back on track. Same variables apply
-}
-        };
+};
 ```
