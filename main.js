@@ -3,56 +3,66 @@ var game = new Chess();
 var $status = $('#status');
 var $fen = $('#fen');
 var $pgn = $('#pgn');
-var playerColor="w";
-var firstMove=1;
-var startingPosition=0;
-var prompt = "I'd like you to pretend to be BOB. BOB is a chess grand master. BOB will be presented with a series of positions in PGN form and his job is to provide the best next move for black and a one sentance analysis of the move and position. He responds with his move in algebraic notation inside square brackets. for example, he would write the move [e7 - e6] as [e6]. You are BOB and the first position for you to analyze is [FIRSTMOVE]";
-var nextPrompt = "Thanks, BOB. The next position for you to analyze is: [PGN]. First, tell me your move in algebraic notation surrounded by square brackets and then give a one sentance analysis of the boardstate and your move.";
-var errorPrompt = "Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets.";
-var scoldType = 0;
-var freeMove = 0; // TODO  
 
 // settings
-// TODO write a function for this
-if (typeof settings !== 'undefined'){
-    if (typeof settings.freeMove !== 'undefined') freeMove = settings.freeMove;
-    if (typeof settings.prompt !== 'undefined') prompt = settings.prompt;
-    if (typeof settings.nextPrompt !== 'undefined') nextPrompt = settings.nextPrompt;
-    if (typeof settings.scoldType !== 'undefined') scoldType = settings.scoldType;
-    if (typeof settings.errorPrompt !== 'undefined') errorPrompt = settings.errorPrompt;
-    if (typeof settings.playerColor !== 'undefined') playerColor = settings.playerColor;
-    if (typeof settings.startingPosition !== 'undefined') startingPosition = settings.startingPosition;
+defaultSettings = {
+    playerColor : {default:"w"},
+    settings.firstMove : {default:1},
+    settings.scoldType : {default:0},
+    settings.freeMove : {default:0},
+    settings.startingPosition : {default:0},
+    prompt : {default:"I'd like you to pretend to be BOB. BOB is a chess grand master. BOB will be presented with a series of positions in PGN form and his job is to provide the best next move for black and a one sentance analysis of the move and position. He responds with his move in algebraic notation inside square brackets. for example, he would write the move [e7 - e6] as [e6]. You are BOB and the first position for you to analyze is [PGN]"},
+    settings.nextPrompt : {default:"Thanks, BOB. The next position for you to analyze is: [PGN]. First, tell me your move in algebraic notation surrounded by square brackets and then give a one sentance analysis of the boardstate and your move."},
+    settings.errorPrompt : {default:"Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move. Please interpret the boardstate and make the best move. tell me your move in algebraic notation surrounded by square brackets."}
 }
+
+if (typeof settings !== 'undefined'){
+    for (var property in defaultSettings){
+        if (typeof settings[property] !== 'undefined'){
+            defaultSettings[property].value = settings[property];
+        }else{
+            defaultSettings[property].value = defaultSettings[property].default;
+        } 
+    }
+}else{
+    for (var property in defaultSettings){
+        defaultSettings[property].value = defaultSettings[property].default;
+    }
+}
+settings=defaultSettings;
 
 // word terms 
-var playerColorHuman=(playerColor=="w"?"White":"Black");
-var AIColorHuman=(playerColor!="w"?"White":"Black");
-var playerFirstPronoun=(playerColor=="w"?"I":"You");
-$("#playerColor").html(playerColorHuman);
-prompt = prompt.replace("[STARTING]",playerFirstPronoun);
+var settings.playerColorHuman=(settings.playerColor=="w"?"White":"Black");
+var AIColorHuman=(settings.playerColor!="w"?"White":"Black");
+var playerFirstPronoun=(settings.playerColor=="w"?"I":"You");
+$("#settings.playerColor").html(settings.playerColorHuman);
+settings.prompt = settings.prompt.replace("[STARTING]",playerFirstPronoun);
 
 // if the AI goes first
-if(firstMove==1 && playerColor!=game.turn()&&!freeMove){
-    prompt = prompt.replace("[BOARDSTATE]","");
-    prompt = prompt.replace("[FIRSTMOVE]","You go first.");
-    PlayerMove(prompt);
-    firstMove=0;
+if(settings.firstMove==1 && settings.playerColor!=game.turn()&&!settings.freeMove){
+    settings.prompt = settings.prompt.replace("[BOARDSTATE]","");
+    settings.prompt = settings.prompt.replace("[settings.firstMove]","You go first.");
+    PlayerMove(settings.prompt);
+    settings.firstMove=0;
 }
-
+function brackets(input){
+    return "["+input+"]";
+}
 // TODO finish implementing this
 function autoReplace(input){
-    input = input.replace("[PGN]",game.pgn());
-    input = input.replace("[FEN]",game.fen());
-    input = input.replace("[AIcolor]",AIColorHuman);
+    input = input.replace("[PGN]",brackets(game.pgn()));
+    input = input.replace("[FEN]",brackets(game.fen()));
+    input = input.replace("[AICOLOR]",AIColorHuman);
+    input = input.replace("[BOARDSTATE]",brackets(game.pgn()));
     return input;
 }
 
 function onDragStart (source, piece, position, orientation) {
-    if(freeMove) return true;
+    if(settings.freeMove) return true;
     // do not pick up pieces if the game is over
     if (game.game_over()) return false
 
-    if (game.turn() !== playerColor) return false;
+    if (game.turn() !== settings.playerColor) return false;
 
     // only pick up pieces for the side to move
     if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -62,8 +72,8 @@ function onDragStart (source, piece, position, orientation) {
 }
 
 function onDrop (source, target, piece) {
-    if(!freeMove){
-        if(game.turn() != playerColor){
+    if(!settings.freeMove){
+        if(game.turn() != settings.playerColor){
             return 'snapback'
         }
         // see if the move is legal
@@ -77,13 +87,13 @@ function onDrop (source, target, piece) {
         if (move === null) return 'snapback'
 
         // say the prompt if its the first move of the game 
-        if(firstMove){
-            firstMove=0;
-            //prompt = prompt.replace("[FIRSTMOVE]","["+game.history()[game.history().length-1]+"]");
-            prompt = prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]");
-            PlayerMove(prompt);
+        if(settings.firstMove){
+            settings.firstMove=0;
+            //prompt = prompt.replace("[settings.firstMove]","["+game.history()[game.history().length-1]+"]");
+            //            prompt = prompt.replace("[settings.firstMove]","["+game.pgn()+"]");
+            PlayerMove(autoReplace(settings.prompt));
         }else{
-            PlayerMove(nextPrompt.replace("[PGN]","["+game.pgn()+"]"));
+            PlayerMove(autoReplace(settings.nextPrompt));
         }
         updateStatus()
     }
@@ -101,14 +111,14 @@ function AImove(movestring){
     if(move === null){
         console.log("Bad move "+movestring);
         badMoveCount++;
-        // TODO autoreplace function
-        ePrompt = errorPrompt.replace("[AIcolor]",AIColorHuman);
-        ePrompt = ePrompt.replace("[PGN]",game.pgn());
-        ePrompt = ePrompt.replace("[FEN]",game.fen());
-        if(scoldType<=0||badMoveCount>scoldType-1){
+        //ePrompt = settings.errorPrompt.replace("[AIcolor]",AIColorHuman);
+        //ePrompt = ePrompt.replace("[PGN]",game.pgn());
+        //ePrompt = ePrompt.replace("[FEN]",game.fen());
+        ePrompt = autoreplace(settings.errorPrompt);
+        if(settings.scoldType<=0||badMoveCount>settings.scoldType-1){
             console.log("Too many bad moves. User input required")
             PlayerMove(ePrompt,1);
-            badMoveCount=scoldType-1; // you're on thin ice
+            badMoveCount=settings.scoldType-1; // you're on thin ice
             return false;
         }
         console.log(badMoveCount+" bad ai moves in a row");
@@ -126,7 +136,7 @@ function AImove(movestring){
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
-    if(!freeMove) board.position(game.fen())
+    if(!settings.freeMove) board.position(game.fen())
 }
 
 // TODO write helper messages when the AI makes an illegal move
@@ -169,15 +179,15 @@ function setPosition(position){
     //    first=(typeof first === 'undefined'?0:first);
     game.load(position);
     board.position(game.fen());
-    if(firstMove){
-        PlayerMove(prompt.replace("[FIRSTMOVE]","["+game.pgn()+"]"));
+    if(settings.firstMove){
+        PlayerMove(autoReplace(settings.prompt));
     }else{
-        PlayerMove(nextPrompt.replace("[PGN]","["+game.pgn()+"]"));
+        PlayerMove(autoReplace(settings.nextPrompt));
     }
 }
 
 function resumeGame(){
-    freeMove=0;
+    settings.freeMove=0;
     setPosition(board.position());
 }
 
@@ -190,25 +200,25 @@ var config = {
     onDrop: onDrop,
     onSnapEnd: onSnapEnd
 }
-if(startingPosition===0){
-    prompt = prompt.replace("[BOARDSTATE]","");
+if(settings.startingPosition===0){
+    settings.prompt = settings.prompt.replace("[BOARDSTATE]","");
 }else{
     // TODO theres a bug in this that resets the pieces after the AI's first move. Something to do with the PGN not being generated right
-    if(startingPosition.stateType=="FEN"){
-        config.position=startingPosition.boardState;
-        game.load(startingPosition.boardState);
-    }else if(startingPosition.stateType=="PGN"){
-        game.loadPGN(startingPosition.boardState);
+    if(settings.startingPosition.stateType=="FEN"){
+        config.position=settings.startingPosition.boardState;
+        game.load(settings.startingPosition.boardState);
+    }else if(settings.startingPosition.stateType=="PGN"){
+        game.loadPGN(settings.startingPosition.boardState);
         config.position=game.fen();
     }
-    prompt = prompt.replace("[BOARDSTATE]","Lets start from the position "+game.fen());
+    settings.prompt = settings.prompt.replace("[BOARDSTATE]","Lets start from the position "+game.fen());
 }
 board = Chessboard('myBoard', config)
 updateStatus()
 
 
 // Always have the human player at the bottom of the board
-if(playerColor!="w"){
+if(settings.playerColor!="w"){
     board.flip();
 }
 
