@@ -35,7 +35,7 @@ settings=defaultSettings;
 var playerColorHuman=(settings.playerColor.value=="w"?"White":"Black");
 var AIColorHuman=(settings.playerColor.value!="w"?"White":"Black");
 var playerFirstPronoun=(settings.playerColor.value=="w"?"I":"You");
-$("#settings.playerColor.value").html(settings.playerColorHuman.value);
+$("#playerColor").html(playerColorHuman);
 settings.prompt.value = settings.prompt.value.replace("[STARTING]",playerFirstPronoun);
 
 // if the AI goes first
