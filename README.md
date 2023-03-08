@@ -1,14 +1,19 @@
 # chessGPT
-a chess interface for chatGPT. Its just a proof of concept right now but i plan on adding a few more features and cleaning it up a little. 
+This is a research tool that injects a chessboard into ChatGPT. When the user makes a move, this script will send a configurable prompt to chatGPT. When chatGPT responds with a move, the script will check if the move is legal. If it is, it will make that move on the injected chessboard. If not, it will prompt chatGPT to stay on task. 
+
+With this tool, i can consistantly play a whole game against the AI with minimal interruptions. I'm still experementing with different styles of prompts and other features to improve its game, but with this tool, ive managed to have more complete and accurate games of chess with chatGPT than anyone else seems to have managed
+
 ## features
-- tells the AI to try again if it makes an illegal move while reminding it of the boardstate
-- only lets the user input legal moves
+- A convenient way to play chess with chatGPT
+- only lets the user and the AI input legal moves
+- configurable prompts, starting positions, and other settings
 
 ## Usage
 To run, paste the code below into the developer console on [chatgpt](https://chat.openai.com/chat)
 ```javascript
 javascript:!function(s,e){s.src=e,s.onload=function(){console.log("jQuery injected"),x=jQuery("body").append('<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js" integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD" crossorigin="anonymous"></script>'),a=jQuery("body").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>'),a=jQuery("body").append('<script src="https://djinnxie.github.io/chessGPT/main.js" referrerpolicy="no-referrer"></script>'),b=jQuery("head").append('<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css" integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU" crossorigin="anonymous">'),c=jQuery("body").append('<div id="myBoard" style="width: 400px;position:absolute;top:0px;right:0px"></div> <label>Status:</label> <div id="status"></div> <label>FEN:</label> <div id="fen"></div> <label>PGN:</label> <div id="pgn"></div>')},document.head.appendChild(s)}(document.createElement("script"),"//code.jquery.com/jquery-latest.min.js");
 ```
+theres a bug where sometimes it throws an error. just paste it again if it does. ill fix it. ...eventually
 ## Settings
 before pasting the script, you can paste a settings object
 ```javascript
@@ -51,8 +56,7 @@ you can use [PGN], [FEN], and [AICOLOR] in your prompts and they will be replace
 "Your task is to respond to the boardstate given with the best possible move. Reply with the move in algebraic notation inside of square brackets. It is [AICOLOR] to move. Do not reply with anything other than the best move unless instructed. Your position is [PGN]"
 ```
 
-
-TODO: Add some sample prompts in ./sampleprompts
+TODO: Add some more example prompts
 
 
 ## TODO
