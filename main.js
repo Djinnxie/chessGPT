@@ -32,10 +32,10 @@ if (typeof settings !== 'undefined'){
 settings=defaultSettings;
 
 // word terms 
-var settings.playerColorHuman=(settings.playerColor=="w"?"White":"Black");
+var playerColorHuman=(settings.playerColor=="w"?"White":"Black");
 var AIColorHuman=(settings.playerColor!="w"?"White":"Black");
 var playerFirstPronoun=(settings.playerColor=="w"?"I":"You");
-$("#settings.playerColor").html(settings.playerColorHuman);
+$("#settings.playerColor").html(playerColorHuman);
 settings.prompt = settings.prompt.replace("[STARTING]",playerFirstPronoun);
 
 // if the AI goes first
