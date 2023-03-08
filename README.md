@@ -21,14 +21,14 @@ javascript:!function(s,e){s.src=e,s.onload=function(){console.log("jQuery inject
 ## Settings
 before pasting the script, you can paste a settings object
 ```javascript
-        settings = { 
-            playerColor:"w", // [w,b]
-            scoldType:0, // how many times will the script try to automatically scold the bot into playing a legal move
-            prompt: "Lets play chess! Reply with your moves in algebraic notation and i will do the same. [FIRSTMOVE]", // replaces the initial prompt. [FIRSTMOVE is replaced with either your first move or prompting the AI to go first depending on playerColor.
-            errorPrompt:"Thats not a legal move. The current boardstate is [PGN] and you are playing [AIcolor]. it is your move.", // auto-scold text. variables are [PGN],[FEN],[LastMove],[AIcolor]
-            startingPosition:{ // set a custom starting position
-                stateType:"FEN", // ["FEN","PGN"]
-                boardState:"rnbqkbnr/pppp1ppp/8/8/4Pp2/8/PPPP2PP/RNBQKBNR"
-            } 
+settings = {
+    playerColor : "w", // [BUGGY] Choose your colour. 
+    scoldType : 0, // how many times will the script autoreply with errorPrompt?
+    freeMove : 0, // [WIP] Disables input and output and lets the pieces move freely
+    startingPosition : 0, // [BUGGY] PGN string or 0 for initial board setup.
+    prompt : "", // The initial prompt to get chatGPT to play chess. Get creative. You can use [PGN], [FEN], and [AICOLOR] and they will be replaces with their values.
+    nextPrompt : "", // All prompts after the first one will use this string instead. The same square bracket variables work here too. 
+    errorPrompt : "" // What do you tell the AI when it makes an illegal move? This prompt is to get the AI back on track. Same variables apply
+}
         };
 ```
