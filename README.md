@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/42308767/224480834-16137030-72ea-42f9-9e9d-3f7f0b7b0c58.png">
 </p>
-
+<sup><sub>Image generated with midjourney and then heavily edited.</sub></sup>
 
 # chessGPT
 This is a research tool that injects a chessboard into ChatGPT. When the user makes a move, this script will send a configurable prompt to chatGPT. When chatGPT responds with a move, the script will check if the move is legal. If it is, it will make that move on the injected chessboard. If not, it will prompt chatGPT to stay on task. 
